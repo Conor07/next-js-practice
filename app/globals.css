@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+* {
+  box-sizing: border-box;
+  font-family: system-ui, sans-serif;
+}
 
 :root {
   --foreground-rgb: 0, 0, 0;
@@ -13,5 +17,6 @@
 
 body {
   color: rgb(var(--foreground-rgb));
-  padding: 1rem;
 }
+
+
