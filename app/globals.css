@@ -1,8 +1,4 @@
 @import "tailwindcss";
-@plugin "daisyui" {
-    themes: ["winter"];
-  }; /* only need this object if you want to customize daisyUI themes */
-
 
 
 :root {
