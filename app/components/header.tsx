@@ -1,5 +1,3 @@
-"use client";
-
 import {
   getKindeServerSession,
   LogoutLink,
@@ -26,13 +24,15 @@ const Header = async () => {
 
       {user ? (
         <>
-          <Image
-            className="rounded-full ml-auto"
-            src={user.picture!}
-            alt="User avatar"
-            width={35}
-            height={35}
-          />
+          {user.picture && (
+            <Image
+              className="rounded-full ml-auto"
+              src={user.picture!}
+              alt="User avatar"
+              width={35}
+              height={35}
+            />
+          )}
 
           <span>{user.email ?? ""}</span>
         </>
