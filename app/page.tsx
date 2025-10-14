@@ -6,6 +6,10 @@ import SignInButton from "./components/signInButton";
 import Image from "next/image";
 import Link from "next/link";
 import SignOutButton from "./components/signOutButton";
+import {
+  LoginLink,
+  RegisterLink,
+} from "@kinde-oss/kinde-auth-nextjs/components";
 
 export default async function Home() {
   const session = await auth();
@@ -27,6 +31,10 @@ export default async function Home() {
           <SignInButton />
         </div>
       )}
+
+      <LoginLink>Login</LoginLink>
+
+      <RegisterLink>Sign up</RegisterLink>
     </main>
   );
 }

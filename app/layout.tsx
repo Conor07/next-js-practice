@@ -1,8 +1,12 @@
+import {
+  getKindeServerSession,
+  LogoutLink,
+} from "@kinde-oss/kinde-auth-nextjs/server";
 import "./globals.css";
 
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import Link from "next/link";
+import Header from "./components/header";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -11,7 +15,7 @@ export const metadata: Metadata = {
   description: "A practice site for learning Next.js features",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -19,13 +23,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <nav className="top-0 flex gap-4 p-4 mb-4 bg-gray-200 w-full">
-          <Link href="/">Home</Link>
-
-          <Link href="/users">Users</Link>
-
-          <Link href="/posts">Posts</Link>
-        </nav>
+        <Header />
 
         {children}
 
