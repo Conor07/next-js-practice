@@ -2,6 +2,9 @@ import { revalidatePath } from "next/cache";
 import React, { Suspense } from "react";
 import PostsForm from "../components/postsForm";
 import { PrismaClient } from "@/lib/generated/prisma";
+import Link from "next/link";
+import { Post } from "./[slug]/page";
+import { createPost } from "../actions/actions";
 
 const Posts: React.FC<{}> = async ({}) => {
   const posts = await fetch("https://jsonplaceholder.typicode.com/posts", {
@@ -15,8 +18,24 @@ const Posts: React.FC<{}> = async ({}) => {
 
   const prisma = new PrismaClient();
 
-  const dbPosts = await prisma.post.findMany();
+  const dbPosts = await prisma.post.findMany({
+    // where: {
+    //   title: {
+    //     endsWith: "post",
+    //   },
+    // },
+    orderBy: {
+      createdAt: "desc",
+    },
+    select: {
+      id: true,
+      title: true,
+      slug: true,
+      content: true,
+    },
+  });
 
+  const dbPostsCount = await prisma.post.count();
   return (
     <div className="p-4">
       <h1 className="mb-4">Posts</h1>
@@ -30,13 +49,22 @@ const Posts: React.FC<{}> = async ({}) => {
       <Suspense
         fallback={<p className="w-full my-4 text-center">Loading posts...</p>}
       >
-        <ul>
-          {dbPosts.map((post: { title: string; content: string }) => {
-            return (
-              <li>
-                <p>{post.title}</p>
+        <h1>All Posts ({dbPostsCount})</h1>
 
-                <p>{post.content}</p>
+        <form action={createPost} className="flex flex-col gap-2">
+          <input type="text" name="title" className="border-2" />
+          <textarea name="content" className="border-2" id="" />
+
+          <button type="submit" className="border-2 bg-gray-500">
+            Create post
+          </button>
+        </form>
+
+        <ul>
+          {dbPosts.map((post: Post, idx) => {
+            return (
+              <li key={idx}>
+                <Link href={`/posts/${post.slug}`}>{post.title}</Link>
               </li>
             );
           })}
