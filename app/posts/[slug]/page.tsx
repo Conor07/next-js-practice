@@ -1,5 +1,6 @@
 import React from "react";
-import { PrismaClient } from "@/lib/generated/prisma";
+import { PrismaClient } from "@prisma/client";
+import { unstable_cache as cache } from "next/cache";
 
 export interface Post {
   id: string;
@@ -8,9 +9,17 @@ export interface Post {
   content: string;
 }
 
-const Post = async ({ params }: { params: { slug: string } }) => {
-  const prisma = new PrismaClient();
+const prisma = new PrismaClient();
 
+const getCachedPost = cache((slug) => {
+  return prisma.post.findUnique({
+    where: {
+      slug,
+    },
+  });
+});
+
+const Post = async ({ params }: { params: { slug: string } }) => {
   const post = await prisma.post.findUnique({
     where: { slug: params.slug },
   });

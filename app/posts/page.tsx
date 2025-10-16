@@ -1,7 +1,7 @@
 import { revalidatePath } from "next/cache";
 import React, { Suspense } from "react";
 import PostsForm from "../components/postsForm";
-import { PrismaClient } from "@/lib/generated/prisma";
+import { PrismaClient } from "@prisma/client";
 import Link from "next/link";
 import { Post } from "./[slug]/page";
 import { createPost } from "../actions/actions";
@@ -19,11 +19,11 @@ const Posts: React.FC<{}> = async ({}) => {
   const prisma = new PrismaClient();
 
   const dbPosts = await prisma.post.findMany({
-    // where: {
-    //   title: {
-    //     endsWith: "post",
-    //   },
-    // },
+    where: {
+      // title: {
+      //   endsWith: "post",
+      // },
+    },
     orderBy: {
       createdAt: "desc",
     },
@@ -34,6 +34,17 @@ const Posts: React.FC<{}> = async ({}) => {
       content: true,
     },
   });
+
+  const user = await prisma.user.findUnique({
+    where: {
+      email: "john@email1.com",
+    },
+    include: {
+      posts: true,
+    },
+  });
+
+  console.log("user: ", user);
 
   const dbPostsCount = await prisma.post.count();
   return (
@@ -68,6 +79,18 @@ const Posts: React.FC<{}> = async ({}) => {
               </li>
             );
           })}
+        </ul>
+
+        <ul>
+          {user &&
+            user.posts &&
+            user.posts.map((post: Post, idx) => {
+              return (
+                <li key={idx}>
+                  <Link href={`/posts/${post.slug}`}>{post.title}</Link>
+                </li>
+              );
+            })}
         </ul>
       </Suspense>
     </div>
